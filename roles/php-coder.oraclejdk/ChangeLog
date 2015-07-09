@@ -1,0 +1,7 @@
+1.1
+- Added oraclejdk_set_as_default parameter which is enabled by default.
+  If you don't want to have it enabled by default and want to preserve backward compatibility then
+  you need to turn it off manually.
+
+1.0
+- Initial version

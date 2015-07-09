@@ -1,0 +1,3 @@
+---
+oraclejdk_package: oracle-java8-installer
+oraclejdk_set_as_default: true

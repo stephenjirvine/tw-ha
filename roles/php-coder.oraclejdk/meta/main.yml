@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Slava Semushin
+  description: Installs OracleJDK from WebUpd8 team's PPA
+  license: GPLv2
+  # required by debconf module
+  min_ansible_version: 1.6
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  categories:
+  - development
+  - system
+dependencies: []
