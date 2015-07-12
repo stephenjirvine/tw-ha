@@ -1,2 +1,3 @@
-- include: webservers.yml
-- include: appservers.yml
+- include: web.yml
+- include: app.yml
+- include: lb.yml

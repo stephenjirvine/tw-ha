@@ -31,9 +31,9 @@ Vagrant.configure(2) do |config|
     ansible.playbook = "../../site.yml"
     ansible.sudo = true
     ansible.groups = {
-      "web" => ["web"],
-      "lb1" => ["lb"],
-      "app1" => ["app"],
+      "web" => ["web1"],
+      "lb" => ["lb1"],
+      "app" => ["app1"],
       "all_groups:children" => ["web", "lb", "app"]
     }
   end
