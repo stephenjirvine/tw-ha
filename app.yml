@@ -1,5 +1,5 @@
 - hosts: app
   sudo: yes
   roles:
-    - role: bennojoy.nginx
-    - role: bennojoy.nginx
+    - role: php-coder.oraclejdk
+    - role: php-coder.jetty

@@ -1,4 +1,4 @@
-- hosts: webservers
+- hosts: lb
   sudo: yes
   roles:
-    - role: bennojoy.nginx
+    - role: info.haproxy
