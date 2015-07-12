@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: webservers
   sudo: yes
   roles:
     - role: bennojoy.nginx
