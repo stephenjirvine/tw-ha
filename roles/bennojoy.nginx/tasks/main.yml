@@ -65,6 +65,6 @@
   apt: pkg=unzip state=installed
 
 - name: unzip static assets
-  unarchive: src=/tmp/static.zip dest=/var/www/tw owner=www-data group=www-data copy=no
+  unarchive: src=/tmp/static.zip dest=/var/www/tw owner=www-data group=www-data copy=no creates=/var/www/tw/static/images/logo.png
   notify:
     - reload nginx

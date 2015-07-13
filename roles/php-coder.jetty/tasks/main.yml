@@ -1,5 +1,4 @@
 ---
-
 - name: Download distribution tarball
   get_url:
     url="http://eclipse.org/downloads/download.php?file=/jetty/{{ jetty_version }}/dist/jetty-distribution-{{ jetty_version }}.tar.gz&r=1"
@@ -63,3 +62,5 @@
     state=started
     enabled=yes
 
+- name: download static assets
+  get_url: url=https://s3.amazonaws.com/infra-assessment/companyNews.war dest="{{ jetty_dst_dir}}"/jetty/webapps/ owner=jetty group=jetty
