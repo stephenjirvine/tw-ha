@@ -15,6 +15,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "app1" do |app|
     app.vm.hostname = "app1"
     app.vm.network :private_network, ip: "192.168.1.31"
+    config.vm.network "forwarded_port", guest: 8080, host: 8081
   end
 
   #Load Balancers
@@ -22,6 +23,7 @@ Vagrant.configure(2) do |config|
     lb.vm.hostname = "lb1"
     lb.vm.network :private_network, ip: "192.168.1.21"
     #running ansible against all hosts as part of last provsioning job
+    config.vm.network "forwarded_port", guest: 80, host: 8080
     config.vm.provision "ansible" do |ansible|
       ansible.playbook = "../../site.yml"
       ansible.sudo = true

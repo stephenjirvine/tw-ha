@@ -64,3 +64,5 @@
 
 - name: download static assets
   get_url: url=https://s3.amazonaws.com/infra-assessment/companyNews.war dest="{{ jetty_dst_dir}}"/jetty/webapps/ owner=jetty group=jetty
+  notify:
+    - restart jetty
