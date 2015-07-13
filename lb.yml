@@ -1,4 +1,4 @@
 - hosts: lb
   sudo: yes
   roles:
-    - role: info.haproxy
+    - role: haproxy

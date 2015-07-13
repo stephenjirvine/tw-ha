@@ -1,0 +1,5 @@
+---
+# file: roles/haproxy/handlers/main.yml
+#
+- name: reload haproxy
+  service: name=haproxy  state=reloaded

@@ -1,0 +1,81 @@
+global
+	log 127.0.0.1 local0
+	uid 0
+	gid 0
+	nbproc 1 # number of processes to use
+	maxconn 40000
+	ulimit-n 99000
+
+	daemon
+	quiet
+	stats 	socket /var/run/haproxy.sock mode 0600 level admin
+
+# 	debug options
+# 	nopoll
+#	nosepoll
+#	nosplice
+# 	tune.bufsize 32768
+
+defaults
+	mode http
+
+	log global
+	option httplog
+    option httpclose
+	#option dontlognull
+	option contstats
+	option splice-auto # Comment this line if service doesn't start
+	no option persist
+	option redispatch
+	option http-server-close
+
+	timeout client 300s
+	timeout server 300s
+	timeout connect 5s
+	#timeout tunnel 30s
+	timeout http-keep-alive 15s
+	timeout http-request 500ms
+
+	retries 3
+
+listen haproxy_stats
+	bind {{ ansible_eth1["ipv4"]["address"] }}:81
+
+	mode http
+	stats enable
+	stats uri /
+	stats refresh 30m
+	stats realm HAProxy\ Statistics
+	stats show-legends
+
+######## Default values for all entries till next defaults section
+defaults
+	  option  dontlognull             # Do not log connections with no requests
+	  option  redispatch              # Try another server in case of connection failure
+	  option  contstats               # Enable continuous traffic statistics updates
+	  retries 3                       # Try to connect up to 3 times in case of failure
+	  timeout connect 5s              # 5 seconds max to connect or to stay in queue
+	  timeout http-keep-alive 1s      # 1 second max for the client to post next request
+	  timeout http-request 15s        # 15 seconds max for the client to send a request
+	  timeout queue 30s               # 30 seconds max queued on load balancer
+	  timeout tarpit 1m               # tarpit hold tim
+	  backlog 10000                   # Size of SYN backlog queue
+
+	  balance roundrobin                      #alctl: load balancing algorithm
+	  mode http                               #alctl: protocol analyser
+	  option tcplog                           #alctl: log format
+	  log global                              #alctl: log activation
+	  timeout client 300s                     #alctl: client inactivity timeout
+	  timeout server 300s                     #alctl: server inactivity timeout
+	  default-server inter 3s rise 2 fall 3   #alctl: default check parameters
+
+frontend ft_exchange_tcp
+	  bind {{ ansible_eth1["ipv4"]["address"] }}:80 name http          #alctl: listener https configuration.
+	  maxconn 10000                         #alctl: connection max (depends on capacity)
+
+    default_backend bk_http       #alctl: default farm to use
+
+backend bk_http
+		{% for host in groups['app'] %}
+ 		server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_eth1["ipv4"]["address"] }}:80 check
+  	{% endfor %}

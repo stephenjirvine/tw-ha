@@ -1,0 +1,40 @@
+---
+# file: roles/haproxy/tasks/main.yml
+- name: ensure python-software-properties is installed
+  apt: pkg=python-software-properties state=installed
+  tags: haproxy
+
+#- name: add repo apt key
+#  apt_key: id=[id] url='[key url]' state=present
+#  tags: [tag]
+
+- name: add haproxy repo
+  apt_repository: repo=ppa:vbernat/haproxy-1.5
+  tags: haproxy
+
+#- name: remove a line from a config file
+#  lineinfile: dest=[destination file] regexp='[regex of line to remove]' state=absent
+#  tags: [tag]
+
+- name: Install packages
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+    - iptables
+    - haproxy
+  tags: haproxy
+
+- name: deploy haproxy config
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
+  notify:
+    - reload haproxy
+  tags: haproxy
+
+- name: deploy haproxy config
+  template: src=haproxy.j2 dest=/etc/default/haproxy
+  notify:
+    - reload haproxy
+  tags: haproxy
+
+- name: ensure haproxy is running
+  service: name=haproxy state=running
+  tags: haproxy

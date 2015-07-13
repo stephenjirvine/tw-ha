@@ -7,17 +7,12 @@
 # you're doing.
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
+  config.ssh.insert_key = false
 
   #Web servers
   config.vm.define "web1" do |web|
     web.vm.hostname = "web1"
     web.vm.network :private_network, ip: "192.168.1.11"
-  end
-
-  #Load Balancers
-  config.vm.define "lb1" do |lb|
-    lb.vm.hostname = "lb1"
-    lb.vm.network :private_network, ip: "192.168.1.21"
   end
 
   #Appservers
@@ -26,16 +21,25 @@ Vagrant.configure(2) do |config|
     app.vm.network :private_network, ip: "192.168.1.31"
   end
 
-  # Provisioning with Ansible
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "../../site.yml"
-    ansible.sudo = true
-    ansible.groups = {
-      "web" => ["web1"],
-      "lb" => ["lb1"],
-      "app" => ["app1"],
-      "all_groups:children" => ["web", "lb", "app"]
-    }
+  #Load Balancers
+  config.vm.define "lb1" do |lb|
+    lb.vm.hostname = "lb1"
+    lb.vm.network :private_network, ip: "192.168.1.21"
+    #running ansible against all hosts as part of last provsioning job
+    config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "../../site.yml"
+      ansible.sudo = true
+      ansible.limit = 'all'# "#{info[:ip]}" # Ansible hosts are identified by ip
+      ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+      ansible.groups = {
+        "web" => ["web1"],
+        "lb" => ["lb1"],
+        "app" => ["app1"],
+        "all_groups:children" => ["web", "lb", "app"]
+      }
+    end
   end
+
+  # Provisioning with Ansible
 
 end
