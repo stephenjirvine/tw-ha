@@ -83,7 +83,7 @@ frontend ft_exchange_tcp
 
 backend bk_web
 {% for host in groups['web'] %}
-	server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_eth1["ipv4"]["address"] }}:8080 check
+	server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_eth1["ipv4"]["address"] }}:8081 check
 {% endfor %}
 
 backend bk_app

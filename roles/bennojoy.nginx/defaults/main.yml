@@ -16,7 +16,7 @@ nginx_separate_logs_per_site: False
 nginx_sites:
  - server:
     file_name: tw
-    listen: 8080
+    listen: 8081
     server_name: localhost
     root: "/var/www/tw/static"
     location1: {name: /, try_files: "$uri $uri/ /index.html"}
