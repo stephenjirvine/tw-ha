@@ -71,11 +71,22 @@ defaults
 
 frontend ft_exchange_tcp
 	  bind 0.0.0.0:80 name http          #alctl: listener https configuration.
-	  maxconn 10000                         #alctl: connection max (depends on capacity)
+	  maxconn 10000                      #alctl: connection max (depends on capacity)
 
-    default_backend bk_http       #alctl: default farm to use
+		acl images path_dir -i images
+		acl styles path_dir -i styles
 
-backend bk_http
-		{% for host in groups['app'] %}
- 		server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_eth1["ipv4"]["address"] }}:8080 check
-  	{% endfor %}
+		use_backend bk_web if images
+		use_backend bk_web if styles
+
+    default_backend bk_app       #alctl: default farm to use
+
+backend bk_web
+{% for host in groups['web'] %}
+	server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_eth1["ipv4"]["address"] }}:8080 check
+{% endfor %}
+
+backend bk_app
+{% for host in groups['app'] %}
+  server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_eth1["ipv4"]["address"] }}:8080 check
+{% endfor %}

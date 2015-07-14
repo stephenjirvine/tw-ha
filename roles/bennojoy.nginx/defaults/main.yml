@@ -18,5 +18,5 @@ nginx_sites:
     file_name: tw
     listen: 8080
     server_name: localhost
-    root: "/var/www/tw"
+    root: "/var/www/tw/static"
     location1: {name: /, try_files: "$uri $uri/ /index.html"}
