@@ -62,7 +62,12 @@
     state=started
     enabled=yes
 
-- name: download static assets
-  get_url: url=https://s3.amazonaws.com/infra-assessment/companyNews.war dest="{{ jetty_dst_dir}}"/jetty/webapps/ owner=jetty group=jetty
+- name: download war file
+  get_url: url=https://s3.amazonaws.com/infra-assessment/companyNews.war dest="{{ jetty_dst_dir}}"/jetty/webapps/root.war owner=jetty group=jetty
   notify:
-    - restart jetty
+    - Restart Jetty
+
+- name: create data directory
+  file: path=/Users/dcameron/persistence/ owner=jetty group=jetty state=directory
+  notify:
+    - Restart Jetty

@@ -70,7 +70,7 @@ defaults
 	  default-server inter 3s rise 2 fall 3   #alctl: default check parameters
 
 frontend ft_exchange_tcp
-	  bind {{ ansible_eth1["ipv4"]["address"] }}:80 name http          #alctl: listener https configuration.
+	  bind 0.0.0.0:80 name http          #alctl: listener https configuration.
 	  maxconn 10000                         #alctl: connection max (depends on capacity)
 
     default_backend bk_http       #alctl: default farm to use
