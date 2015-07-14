@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.ssh.insert_key = false
+
+  #Web servers
+  (1..3).each do |i|
+    config.vm.define "web#{i}" do |web|
+      web.vm.hostname = "web#{i}"
+      web.vm.network :private_network, ip: "192.168.1.1#{i}"
+    end
+  end
+
+  #Appservers
+  (1..3).each do |i|
+    config.vm.define "app#{i}" do |app|
+      app.vm.hostname = "app#{i}"
+      app.vm.network :private_network, ip: "192.168.1.3#{i}"
+    end
+  end
+
+  #Load Balancers
+    config.vm.define "lb1" do |lb|
+      lb.vm.hostname = "lb1"
+      lb.vm.network :private_network, ip: "192.168.1.21"
+      #running ansible against all hosts as part of last provsioning job
+      config.vm.network "forwarded_port", guest: 80, host: 8080
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "../../site.yml"
+        ansible.sudo = true
+        ansible.limit = 'all'# "#{info[:ip]}" # Ansible hosts are identified by ip
+        ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+        ansible.groups = {
+          "web" => ["web1", "web2", "web3"],
+          "app" => ["app1", "app2", "app3"],
+          "lb" => ["lb1"],
+          "all_groups:children" => ["web", "lb", "app"]
+        }
+      end
+    end
+end
