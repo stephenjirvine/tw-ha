@@ -22,4 +22,5 @@ quick start:
 git clone https://github.com/stephenjirvine/tw-ha.git
 
 cd tw-ha/vagrant/devenv/
+
 vagrant up
